@@ -12,7 +12,7 @@
 """
 
 from __future__ import print_function
-import re
+
 import sys
 import imp
 import getpass
@@ -22,6 +22,9 @@ from twisted.python import filepath
 
 from mamba.utils.checkers import Checkers
 from mamba.utils.output import bold, darkgreen, darkred, create_color_func
+
+if sys.version_info > (3, ):
+    raw_input = input
 
 
 class Interaction(object):
@@ -177,7 +180,7 @@ def import_services():
     module.__file__ = 'mamba_services.py'
 
     try:
-        exec code in module.__dict__
+        exec(code, module.__dict__)
     except:
         del sys.modules['mamba_services']
         # propagate

@@ -10,11 +10,14 @@
 .. moduleauthor:: Oscar Campos <oscar.campos@member.fsf.org>
 """
 
+import sys
 import decimal
 import logging
 import collections
 
 from twisted.python import log
+
+PYTHON3 = False if sys.version_info < (3, ) else True
 
 
 class Converter(object):
@@ -22,7 +25,11 @@ class Converter(object):
     Object Converter class
     """
 
-    primitives = (int, long, float, bool, str, unicode)
+    if PYTHON3 is True:
+        primitives = (int, float, bool, str)
+    else:
+        primitives = (int, long, float, bool, str, unicode)
+
     containers = (str, tuple, list, dict)
 
     def __init__(self):

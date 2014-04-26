@@ -113,7 +113,7 @@ class Application(object):
                 )
             )
 
-            for key, value in self.__dict__.iteritems():
+            for key, value in self.__dict__.items():
                 if not key.startswith('_'):
                     print('{key}: {value}'.format(
                         key=blue(key.ljust(12)),

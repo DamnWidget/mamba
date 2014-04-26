@@ -27,15 +27,15 @@ if '__pypy__' in sys.modules:
 del sys
 
 # setup version
-from _version import version
+from ._version import version
 __version__ = version.short()
 
-from .application import Mamba, ApplicationError
-from .application import AppStyles
-from .application import Controller, ControllerManager
-from .application import Model, ModelManager
 from .enterprise import Database
-from plugin import ExtensionPoint
+from .application import AppStyles
+from .plugin import ExtensionPoint
+from .application import Model, ModelManager
+from .application import Mamba, ApplicationError
+from .application import Controller, ControllerManager
 
 
 __all__ = [

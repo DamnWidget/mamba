@@ -6,7 +6,13 @@
 Tests for mamba.utils.config
 """
 
+import os
+import sys
 import tempfile
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 from twisted.trial import unittest
 from twisted.python import filepath
@@ -33,8 +39,6 @@ class DatabaseTest(unittest.TestCase):
         self.assertEqual(config.Database().max_threads, 20)
 
     def test_database_fallback_if_previous_loaded_was_ok(self):
-        import sys
-        from cStringIO import StringIO
         stdout = sys.stdout
         sys.stdout = StringIO()
 
@@ -62,9 +66,6 @@ class DatabaseTest(unittest.TestCase):
         self.assertEqual(config.Database().min_threads, 5)
 
     def test_database_write(self):
-        import os
-        import sys
-        import json
         currdir = os.getcwd()
         os.mkdir('tmp')
         os.chdir('./tmp')

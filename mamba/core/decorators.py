@@ -11,7 +11,11 @@
 
 """
 
-import cPickle
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
 import functools
 from collections import OrderedDict
 
@@ -43,7 +47,7 @@ def cache(size=16):
             int_cache.update({args: result})
 
             if size != 0:
-                while len(cPickle.dumps(int_cache)) >= size * 1024 * 1024:
+                while len(pickle.dumps(int_cache)) >= size * 1024 * 1024:
                     int_cache.popitem(False)
 
             return result

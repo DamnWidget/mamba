@@ -17,19 +17,15 @@ import marshal
 
 from twisted.python import filepath
 
-from mamba import plugin
+if sys.version_info < (3, ):
+    from .py_2to3.py2 import DeployerProvider
+else:
+    from .py_2to3.py3 import DeployerProvider
 
 
 class DeployerError(Exception):
     """Fired when some problem arises
     """
-
-
-class DeployerProvider:
-    """Mount point for plugins which refer to Deployers for our applications.
-    """
-
-    __metaclass__ = plugin.ExtensionPoint
 
 
 def deployer_import(name, path):
@@ -59,7 +55,7 @@ def deployer_import(name, path):
     module.__file__ = path
 
     try:
-        exec importer.code_object in module.__dict__
+        exec(importer.code_object, module.__dict__)
     except Exception:
         del sys.modules[name]
         raise  # propagate

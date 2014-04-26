@@ -150,7 +150,7 @@ class Template(object):
                 loader=loader
             )
 
-        for arg, value in kwargs.iteritems():
+        for arg, value in kwargs.items():
             if hasattr(self.env, arg):
                 setattr(self.env, arg, value)
 
@@ -174,7 +174,7 @@ class Template(object):
                 getframeinfo(currentframe().f_back).function
             )
 
-            for key, value in self.controller.render_keys.iteritems():
+            for key, value in self.controller.render_keys.items():
                 kwargs[key] = value
 
             return self.env.get_template(template).render(**kwargs)

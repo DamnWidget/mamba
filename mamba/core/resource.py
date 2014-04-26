@@ -11,6 +11,7 @@
 
 """
 
+import sys
 
 from twisted.web import static
 from twisted.web.resource import NoResource, Resource as TwistedResource
@@ -18,6 +19,8 @@ from twisted.web.resource import NoResource, Resource as TwistedResource
 from mamba.http import headers
 from mamba.utils.config import Application
 from mamba.application import scripts, appstyles
+
+PYTHON3 = False if sys.version_info < (3, ) else True
 
 
 class Resource(TwistedResource):
@@ -36,6 +39,12 @@ class Resource(TwistedResource):
 
         # headers and render keys for root_page and index templates
         header = headers.Headers()
+        styles = self._styles_manager.get_styles().values(),
+        scripts = self._scripts_manager.get_scripts().values()
+        if PYTHON3 is True:
+            styles = list(styles)
+            scripts = list(scripts)
+
         self.render_keys = {
             'doctype': header.get_doctype(),
             'header': {
@@ -46,8 +55,8 @@ class Resource(TwistedResource):
                 'language_content': header.get_language_content(),
                 'mamba_content': header.get_mamba_content(),
                 'media': header.get_favicon_content('assets'),
-                'styles': self._styles_manager.get_styles().values(),
-                'scripts': self._scripts_manager.get_scripts().values(),
+                'styles': styles,
+                'scripts': scripts,
                 'lessjs': Application().lessjs
             }
         }

@@ -12,23 +12,23 @@
 
 """
 
+import sys
 from os.path import normpath
 
 from twisted.python import log
 from twisted.web import http, server
 from zope.interface import implementer
 
-from mamba import plugin
 from mamba.web import routing
 from mamba.web import asyncjson
 from mamba.utils.output import bold
 from mamba.core import module, resource
 from mamba.core.interfaces import IController
 
-
-__all__ = [
-    'ControllerError', 'ControllerProvider', 'Controller', 'ControllerManager'
-]
+if sys.version_info < (3, ):
+    from .py_2to3.py2 import ControllerProvider
+else:
+    from .py_2to3.py3 import ControllerProvider
 
 
 class ControllerError(Exception):
@@ -36,17 +36,6 @@ class ControllerError(Exception):
     """
 
     pass
-
-
-class ControllerProvider:
-    """
-    Mount point for plugins which refer to Controllers for our applications.
-
-    Controllers implementing this reference should implements the IController
-    interface
-    """
-
-    __metaclass__ = plugin.ExtensionPoint
 
 
 @implementer(IController)
@@ -187,7 +176,7 @@ class Controller(resource.Resource, ControllerProvider):
         :type headers: dict
         """
         request.setResponseCode(code)
-        for header, value in headers.iteritems():
+        for header, value in headers.items():
             request.setHeader(header, value)
 
     def route_dispatch(self, request):
@@ -288,3 +277,8 @@ class ControllerManager(module.ModuleManager):
                 parent = self.lookup_path(module.__parent__)
                 if parent is not None:
                     parent.children[module.__route__] = module
+
+
+__all__ = [
+    'ControllerError', 'ControllerProvider', 'Controller', 'ControllerManager'
+]

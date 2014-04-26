@@ -51,7 +51,7 @@ class PackagesManager(object):
         """
 
         log.msg('Registering packages...')
-        for package, data in self.config.packages.iteritems():
+        for package, data in self.config.packages.items():
             log.msg('registring package {}'.format(package))
             try:
                 module = __import__(package, globals(), locals())

@@ -6,6 +6,7 @@
 Tests for mamba.utils.converter
 """
 
+import sys
 import decimal
 
 from twisted.trial import unittest
@@ -13,25 +14,43 @@ from twisted.trial import unittest
 from mamba.utils import json
 from mamba.utils.converter import Converter
 
+PYTHON3 = False if sys.version_info < (3, ) else True
+
 
 class ConverterTest(unittest.TestCase):
 
     def setUp(self):
-        self.test_data = {
-            int: 1,
-            long: 1L,
-            float: 1.0,
-            bool: True,
-            str: 'String',
-            unicode: u'Unicode',
-            tuple: (1, 2),
-            list: [1, 2],
-            dict: {}
-        }
+        if PYTHON3 is True:
+            self.test_data = {
+                int: 1,
+                float: 1.0,
+                bool: True,
+                str: 'String',
+                tuple: (1, 2),
+                list: [1, 2],
+                dict: {}
+            }
+        else:
+            self.test_data = {
+                int: 1,
+                long: 1L,
+                float: 1.0,
+                bool: True,
+                str: 'String',
+                unicode: u'Unicode',
+                tuple: (1, 2),
+                list: [1, 2],
+                dict: {}
+            }
 
     def test_converts_primitives_to_json(self):
         for t in set(Converter.primitives + Converter.containers):
-            if t is str or t is unicode:
+            if not PYTHON3 and t is str or t is unicode:
+                self.assertEqual(
+                    json.dumps(self.test_data[t]),
+                    '"{}"'.format(self.test_data[t])
+                )
+            elif PYTHON3 and t is str:
                 self.assertEqual(
                     json.dumps(self.test_data[t]),
                     '"{}"'.format(self.test_data[t])

@@ -6,9 +6,13 @@
 Tests for mamba.utils.camelcase
 """
 
+import sys
+
 from twisted.trial import unittest
 
 from mamba.utils import camelcase
+
+PYTHON3 = False if sys.version_info < (3, ) else True
 
 
 class TestCamelCase(unittest.TestCase):
@@ -18,7 +22,8 @@ class TestCamelCase(unittest.TestCase):
         self.camel = camelcase.CamelCase('test case')
         self.camel_tuple = camelcase.CamelCase(('test', 'case'))
         self.camel_list = camelcase.CamelCase(('test', 'case'))
-        self.camel_unicode = camelcase.CamelCase(u'test case')
+        if not PYTHON3:
+            self.camel_unicode = camelcase.CamelCase(u'test case')
 
     def test_camelcase(self):
         self.assertEqual(self.camel.camelize(), 'Test Case')
@@ -39,7 +44,10 @@ class TestCamelCase(unittest.TestCase):
         self.assertEqual(self.camel_list.camelize(True), 'TestCase')
 
     def test_camelcase_unicode(self):
-        self.assertEqual(self.camel_unicode.camelize(), u'Test Case')
+        if not PYTHON3:
+            self.assertEqual(self.camel_unicode.camelize(), u'Test Case')
+        else:
+            raise unittest.SkipTest('We are on Python3 Unicode test skipped')
 
     def test_camelcase_unknown_type_raises(self):
         camel = camelcase.CamelCase({'test': 'case'})

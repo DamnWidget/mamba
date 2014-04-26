@@ -24,7 +24,7 @@ class AppStyles(object):
 
         # shared packages
         config = InstalledPackages(config_file_name)
-        for package, data in config.packages.iteritems():
+        for package, data in config.packages.items():
             if data.get('use_scripts', False) is False:
                 continue
 

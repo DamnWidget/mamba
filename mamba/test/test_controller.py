@@ -8,7 +8,11 @@ Tests for mamba.application.controller
 
 import sys
 import urllib
-from cStringIO import StringIO
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 from collections import OrderedDict
 
 from twisted.internet import defer
@@ -27,6 +31,8 @@ from mamba.web.response import Ok
 from mamba.application import controller
 from mamba.core.interfaces import INotifier
 
+PYTHON3 = False if sys.version_info < (3, ) else True
+
 
 class ControllerRequest(DummyRequest):
     """
@@ -35,7 +41,10 @@ class ControllerRequest(DummyRequest):
 
     def __init__(self, postpath, params, session=None):
         self.content = StringIO()
-        self.content.write(urllib.urlencode(params))
+        if PYTHON3 is True:
+            self.content.write(urllib.parse.urlencode(params))
+        else:
+            self.content.write(urllib.urlencode(params))
         self.content.seek(0, 0)
         self.requestHeaders = Headers()
 

@@ -134,7 +134,7 @@ class Model(ModelProvider):
         ordered_columns = OrderedDict()
 
         for _, ordered_property in creation_order:
-            for column, property_ in cls._storm_columns.iteritems():
+            for column, property_ in cls._storm_columns.items():
                 if ordered_property is property_:
                     ordered_columns[column] = property_
                     break

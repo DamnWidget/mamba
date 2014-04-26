@@ -6,7 +6,10 @@ from __future__ import print_function
 
 import re
 import sys
-from cStringIO import StringIO
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 from twisted.python import usage
 from storm.uri import URI

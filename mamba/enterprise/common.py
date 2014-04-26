@@ -11,11 +11,15 @@
 
 """
 
+import sys
+
 from storm.expr import Undef
 from storm import variables, properties
 from storm.locals import create_database, Store
 
 from mamba.utils import config
+
+PYTHON3 = False if sys.version_info < (3, ) else True
 
 
 class NativeEnumVariable(variables.Variable):
@@ -85,10 +89,8 @@ class CommonSQL(object):
             store = Store(create_database(config.Database().uri))
         registers = []
         rows = store.find(self.model.__class__)
-        fields = [
-            r._detect_attr_name(self.model.__class__) for r in
-            self.model._storm_columns.keys()
-        ]
+        columns = self.model._storm_columns.keys()
+        fields = [r._detect_attr_name(self.model.__class__) for r in columns]
         for r in rows:
             tmp_row = {}
             for field in fields:
@@ -102,17 +104,30 @@ class CommonSQL(object):
 
         query = ''
         for register in registers:
-            query += ('INSERT INTO {}{}{} ({}) VALUES ({});\n'.format(
-                commas,
-                self.model.__storm_table__,
-                commas,
-                ', '.join(register.keys()),
-                ', '.join([(
-                    str(field) if type(field) is not unicode
-                    else "'{}'".format(field))
-                    for field in register.values()
-                ])
-            ))
+            if PYTHON3 is True:
+                query += ('INSERT INTO {}{}{} ({}) VALUES ({});\n'.format(
+                    commas,
+                    self.model.__storm_table__,
+                    commas,
+                    ', '.join(list(register.keys())),
+                    ', '.join([(
+                        str(field) if type(field) is not str
+                        else "'{}'".format(field))
+                        for field in register.values()
+                    ])
+                ))
+            else:
+                query += ('INSERT INTO {}{}{} ({}) VALUES ({});\n'.format(
+                    commas,
+                    self.model.__storm_table__,
+                    commas,
+                    ', '.join(register.keys()),
+                    ', '.join([(
+                        str(field) if type(field) is not unicode
+                        else "'{}'".format(field))
+                        for field in register.values()
+                    ])
+                ))
 
         return query
 
@@ -136,7 +151,10 @@ class CommonSQL(object):
 
     def get_compound_primary_key(self):
         primary_key_names = self.model.__storm_primary__
-        primary_key_list = range(len(primary_key_names))
+        if PYTHON3 is True:
+            primary_key_list = list(range(len(primary_key_names)))
+        else:
+            primary_key_list = range(len(primary_key_names))
 
         for column, property_ in self.get_storm_columns():
             if property_.name in primary_key_names:

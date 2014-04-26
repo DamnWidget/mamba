@@ -10,7 +10,11 @@ import os
 import sys
 import getpass
 import datetime
-from cStringIO import StringIO
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 from contextlib import contextmanager
 
 from twisted.internet import utils, defer

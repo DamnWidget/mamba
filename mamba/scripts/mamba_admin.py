@@ -20,13 +20,13 @@ from mamba import copyright as mamba_copyright
 from mamba.utils.output import darkgreen, darkred
 from mamba.core import GNU_LINUX, BSD, OSX, WINDOWS, POSIX
 
-from _sql import SqlOptions, Sql
-from commons import import_services
-from _view import ViewOptions, View
-from _model import ModelOptions, Model
-from _package import PackageOptions, Package
-from _project import ApplicationOptions, Application
-from _controller import ControllerOptions, Controller
+from ._sql import SqlOptions, Sql
+from .commons import import_services
+from ._view import ViewOptions, View
+from ._model import ModelOptions, Model
+from ._package import PackageOptions, Package
+from ._project import ApplicationOptions, Application
+from ._controller import ControllerOptions, Controller
 
 
 def mamba_services_not_found():
